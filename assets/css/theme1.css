@@ -1,0 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Bungee&display=swap');
+
+body {
+    background-color: transparent;
+}
+
+.chat-line {
+    font-family: 'Bungee', cursive;
+    background-color: #16213e;
+    color: #929292;
+    margin: 0;
+    padding: 10px 15px;
+    border-right: 4px solid #e94560;
+    animation: none;
+}
+
+.chat-line.even {
+    background-color: #0f3460;
+}
+
+.chat-name {
+    text-transform: uppercase;
+}

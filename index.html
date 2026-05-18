@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Twitch Chat Horizontal Overlay</title>
+    <meta name="description"
+        content="A clean, ticker-style horizontal chat overlay for Twitch streamers. Designed to be placed at the top or bottom of your stream, it allows chat messages to flow across the screen in a single line, making it ideal for minimalist or high-action layouts where vertical space is limited." />
+    <meta name="keywords" content="Twitch, chat, horizontal, overlay" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Twitch Chat Horizontal Overlay" />
+    <meta property="og:description"
+        content="A clean, ticker-style horizontal chat overlay for Twitch streamers. Designed to be placed at the top or bottom of your stream, it allows chat messages to flow across the screen in a single line, making it ideal for minimalist or high-action layouts where vertical space is limited." />
+    <meta property="og:url" content="" />
+    <meta property="og:site_name" content="Twitch Chat Horizontal Overlay" />
+    <script src="assets/js/jquery-3.6.0.min.js"></script>
+    <script src="assets/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="assets/css/bootstrap452.min.css">
+    <link rel="stylesheet" href="assets/css/dark.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <link rel="apple-touch-icon" sizes="57x57" href="assets/images/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="assets/images/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="assets/images/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="assets/images/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="assets/images/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="assets/images/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="assets/images/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="assets/images/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/images/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/images/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="assets/images/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicon-16x16.png">
+</head>
+<style>
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Noto Sans, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+        background-color: #181821;
+        color: #ddd9e8 !important;
+    }
+
+    a {
+        text-decoration: none !important;
+        color: #8c8dff !important;
+    }
+
+    a:hover,
+    a:focus {
+        text-decoration: underline !important;
+        color: #a0a1ff !important;
+    }
+
+    .nav-pills a {
+        text-decoration: none !important;
+        color: #fff !important;
+    }
+
+    a i {
+        color: #ddd9e8;
+    }
+
+    a:hover i,
+    a:focus i,
+    a.active i {
+        color: #eef0f3;
+    }
+
+    .btn-link {
+        color: #ddd9e8 !important;
+    }
+
+    .muted {
+        color: #606085 !important;
+    }
+
+    .card,
+    .alert-dark {
+        background-color: #292938 !important;
+        border-color: #292938 !important;
+        color: #ddd9e8 !important;
+    }
+
+    .hide {
+        display: none;
+    }
+
+    .ml-0 {
+        margin-left: 0 !important;
+    }
+
+    .ml-4 {
+        margin-left: 1.5rem !important;
+    }
+
+    .pl-0 {
+        padding-left: 0 !important;
+    }
+
+    .pr-0 {
+        padding-right: 0 !important;
+    }
+
+    .dark-blue {
+        background-color: #1b2836 !important;
+        color: #fff !important;
+    }
+
+    .light-blue {
+        background-color: #354e69 !important;
+        color: #fff !important;
+    }
+
+    .btn-purple,
+    .btn-purple:hover,
+    .btn-purple:focus,
+    .btn-purple:active {
+        background-color: #6441a5;
+        border-color: #523c7c;
+    }
+</style>
+
+<body onload="onInit()">
+    <div class="container">
+        <div class="row pt-md-4 mb-4">
+            <ul class="nav nav-pills">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle active" data-toggle="dropdown" href="#" role="button"
+                        aria-haspopup="true" aria-expanded="false">Twitch Tools</a>
+                    <div class="dropdown-menu" id="main-nav">
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div class="alert alert-info alert-dismissible fade show mb-4" role="alert">
+            <p style="margin: 0;">If you enjoy some of these tools, please consider <a
+                    href="https://www.teklynk.com/support" target="_blank" style="color: #007bff;">donating</a>. It
+                helps support the online infrastructure that powers these projects.</p>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-body shadow">
+                <h2>Twitch Horizontal Chat Overlay</h2>
+                <p>A clean, horizontal ticker-style chat overlay for your Twitch stream. Perfect for compact layouts or
+                    bottom-of-screen scrolls.</p>
+                <h3>Features:</h3>
+                <ul>
+                    <li><strong>Horizontal Flow:</strong> New messages enter from the right and push older messages to
+                        the left.</li>
+                    <li><strong>Multiple Themes:</strong> Choose between several themes including Cyberpunk (Orbitron)
+                        and Twitch Dark mode.</li>
+                    <li><strong>Customizable URL Params:</strong> Toggle badges, BetterTTV emotes, and chatter colors
+                        directly from the link.</li>
+                    <li><strong>Emote Support:</strong> Full support for native Twitch animated emotes and BetterTTV
+                        (Global & Channel) emotes.</li>
+                    <li><strong>Auto-Pruning:</strong> Automatically removes older messages from the DOM to maintain
+                        high performance during long streams.</li>
+                </ul>
+                <p>Set the width to match your canvas (e.g., 1920) and height to about 150-200px.</p>
+            </div>
+        </div>
+
+        <div class="form-label-group mb-4">
+            <label for="mainChannel">Twitch Account</label>
+            <input type="text" id="mainChannel" class="form-control shadow" value="" placeholder="MrCoolStreamer"
+                size="50">
+        </div>
+
+        <div class="form-group">
+            <label for="themeOption">Theme options</label>
+            <select class="form-control shadow" id="themeOption">
+                <option value="0" selected>None</option>
+                <option value="1">Modern</option>
+                <option value="2">Cyber Orbitron</option>
+                <option value="3">Pink Comfortaa</option>
+                <option value="4">Twitchy</option>
+            </select>
+        </div>
+
+        <div class="form-check mb-2">
+            <input class="form-check-input shadow" type="checkbox" value="" id="useColor" checked>
+            <label class="form-check-label" for="useColor">
+                Username colors
+            </label>
+        </div>
+        <div class="form-check mb-2">
+            <input class="form-check-input shadow" type="checkbox" value="" id="showBadges" checked>
+            <label class="form-check-label" for="showBadges">
+                Show badges
+            </label>
+        </div>
+        <div class="form-check mb-2">
+            <input class="form-check-input shadow" type="checkbox" value="" id="showBttvEmotes" checked>
+            <label class="form-check-label" for="showBttvEmotes">
+                Show BTTV emotes
+            </label>
+        </div>
+
+        <br>
+        <button class="btn btn-lg btn-success btn-block text-white shadow" id="generate_button" type="button">Generate
+            Overlay
+            Link</button>
+        <br>
+        <div id="overlaylink" class="hide"></div>
+    </div>
+    <div class="text-center p-1">
+        <a class="btn btn-link btn-lg" href="https://github.com/teklynk/twitch_clips_player/blob/main/README.md"
+            target="_blank" title="README"><i class="fa-brands fa-readme"></i></a>
+        <a class="btn btn-link btn-lg" href="https://github.com/teklynk/twitch_clips_player" target="_blank"
+            title="GitHub"><i class="fa-brands fa-github"></i></a>
+        <a class="btn btn-link btn-lg" href="https://github.com/teklynk/twitch_clips_player/discussions" target="_blank"
+            title="GitHub Discussions"><i class="fa-solid fa-comment"></i></a>
+        <a class="btn btn-link btn-lg" href="https://github.com/sponsors/teklynk" target="_blank"
+            title="Donate/Support"><i class="fa-solid fa-dollar-sign"></i></a>
+    </div>
+    <div class="container text-center p-4">
+        <small class="muted">Made with <i class="fa fa-heart vertical-middle"></i> by <a href="https://www.teklynk.com"
+                target="_blank">Teklynk</a></small>
+    </div>
+    <script>
+
+        function onInit() {
+
+            if (localStorage.getItem("TwitchChatMainChannel")) {
+                document.getElementById("mainChannel").value = localStorage.getItem("TwitchChatMainChannel");
+            }
+            if (localStorage.getItem("TwitchChatThemeOption")) {
+                document.getElementById("themeOption").value = localStorage.getItem("TwitchChatThemeOption");
+            }
+
+            if (localStorage.getItem("TwitchChatShowBadges")) {
+                let isChecked = (localStorage.getItem("TwitchChatShowBadges") === 'true');
+                document.getElementById("showBadges").checked = isChecked;
+            }
+            if (localStorage.getItem("TwitchChatUseColor")) {
+                let isChecked = (localStorage.getItem("TwitchChatUseColor") === 'true');
+                document.getElementById("useColor").checked = isChecked;
+            }
+            if (localStorage.getItem("TwitchChatShowBTTVEmotes")) {
+                let isChecked = (localStorage.getItem("TwitchChatShowBTTVEmotes") === 'true');
+                document.getElementById("showBttvEmotes").checked = isChecked;
+            }
+        }
+
+        document.getElementById("mainChannel").oninput = function () {
+            localStorage.setItem("TwitchChatMainChannel", this.value.toLowerCase());
+        };
+
+        document.getElementById("themeOption").onchange = function () {
+            localStorage.setItem("TwitchChatThemeOption", this.value);
+        };
+
+        document.getElementById("useColor").onchange = function () {
+            localStorage.setItem("TwitchChatUseColor", this.checked);
+        };
+
+        document.getElementById("showBadges").onchange = function () {
+            localStorage.setItem("TwitchChatShowBadges", this.checked);
+        };
+
+        document.getElementById("showBttvEmotes").onchange = function () {
+            localStorage.setItem("TwitchChatShowBTTVEmotes", this.checked);
+        };
+
+        // Check if any input fields have changed
+        $(":text,textarea,select,:checkbox,input[type=range],input[type=password],input[type=number]").on('change', function (e) {
+            $("#overlaylink").addClass("hide");
+        });
+
+        document.getElementById("generate_button").addEventListener("click", function (e) {
+            let mainChannel = document.getElementById("mainChannel").value.trim();
+            let themeOption = document.getElementById("themeOption").value;
+            let useColor = document.getElementById("useColor").checked;
+            let showBadges = document.getElementById("showBadges").checked;
+            let showBttvEmotes = document.getElementById("showBttvEmotes").checked;
+
+            let validationError = false;
+
+            if (!mainChannel) {
+                alert('Twitch main channel is not set');
+            }
+
+            function validateForm() {
+                const mainChannelInput = document.getElementById('mainChannel');
+                const mainChannelValue = mainChannelInput.value;
+                return true;
+            }
+
+            validateForm();
+
+            if (!validationError) {
+                // build overlay url
+                let srcURL = window.location.protocol + "//" + window.location.host + window.location.pathname;
+                let fullUrl = srcURL + "chat.html?channel=" + mainChannel + "&themeOption=" + themeOption + "&useColor=" + useColor + "&showBadges=" + showBadges + "&showBttvEmotes=" + showBttvEmotes;
+                fullUrl = fullUrl.replace("index.htmlchat.html", "chat.html");
+                document.getElementById("overlaylink").classList.remove("hide");
+                document.getElementById("overlaylink").innerHTML = "<p>Add this link as a browser source in OBS.<br>" +
+                    "<a style='word-break:break-all;' href='" + fullUrl + "' target='_blank'>" + fullUrl + "</a><br><span class='text-warning'><small>* Never share this url with anyone or show it on stream!</small></span></p>";
+            }
+
+        });
+
+        // Json data - Ajax call
+        fetch("https://twitchapi.teklynk.com/getnav.php")
+            .then(response => response.json())
+            .then(nav_json => {
+                $.each(nav_json, function (i, val) {
+                    $('<a class="dropdown-item" href="' + val.url + '">' + val.name + '</a>').appendTo('#main-nav');
+                });
+            })
+            .catch(error => console.error('Error loading navigation:', error));
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,141 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap');
+
+html {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Fredoka', sans-serif;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  font-size: 18pt;
+}
+
+@keyframes chat-entry {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.chat-line {
+  margin: 0 0.3em 0 0.3em;
+  padding-left: 0.5em;
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  text-shadow: 1px 1px #000000;
+  flex-shrink: 0;
+  animation: chat-entry 0.4s ease-out forwards;
+}
+
+.chat-message {
+  color: #fff;
+  text-align: left;
+  display: inline-flex;
+  align-items: center;
+  line-break: normal;
+  word-break: break-word;
+}
+
+.chat-title {
+  text-align: left;
+  font-weight: bold;
+  padding-left: 4px;
+  box-shadow: 0px 8px 8px 4px #00000080;
+}
+
+.chat-name {
+  color: #6441A4;
+  display: inline;
+  text-align: left;
+  padding-left: 0;
+}
+
+.emoticon {
+  background-position: center center;
+  background-repeat: no-repeat;
+  display: inline-block;
+  height: 1.1em;
+  min-width: 1.1em;
+  padding: 0 .2em 0 .2em;
+}
+
+.chat-colon {
+  margin-right: 4px;
+}
+
+.chat-badges {
+  display: inline-flex;
+  align-items: center;
+}
+
+.chat-line:not(.chat-action) .chat-colon:after {
+  content: ":";
+}
+
+.chat-badges>div {
+  border-radius: 2px;
+  height: 1.1em;
+  min-width: 1.1em;
+  display: block;
+  background-size: contain;
+  background-repeat: no-repeat;
+  margin: 0 .2em 0 0;
+}
+
+.chat-badge-mod {
+  background-color: hsl(105, 89%, 36%);
+  background-image: url(https://static-cdn.jtvnw.net/badges/v1/3267646d-33f0-4b17-b3df-f923a41db1d0/3);
+}
+
+.chat-badge-turbo {
+  background-color: hsl(261, 43%, 45%);
+  background-image: url(https://static-cdn.jtvnw.net/badges/v1/bd444ec6-8f34-4bf9-91f4-af1e3428d80f/3);
+}
+
+.chat-badge-broadcaster {
+  background-color: hsl(0, 81%, 50%);
+  background-image: url(https://static-cdn.jtvnw.net/badges/v1/5527c58c-fb7d-422d-b71b-f309dcb85cc1/3);
+}
+
+.chat-badge-admin {
+  background-color: hsl(40, 96%, 54%);
+  background-image: url(https://static-cdn.jtvnw.net/badges/v1/9ef7e029-4cdf-4d4d-a0d5-e2b3fb2583fe/3);
+}
+
+.chat-badge-staff {
+  background-color: hsl(268, 55%, 13%);
+  background-image: url(https://static-cdn.jtvnw.net/badges/v1/d97c37bd-a6f5-4c38-8f57-4e4bef88af34/3);
+}
+
+.chat-badge-bot {
+  background-image: url(https://cdn.betterttv.net/tags/bot.png);
+}
+
+.chat-line.fade-out {
+  opacity: 0;
+}
+
+div#chat {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  overflow-x: hidden;
+  white-space: nowrap;
+  scroll-behavior: smooth;
+  width: 100%;
+  mask-image: linear-gradient(to right, transparent 0%, black 15%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 15%);
+}
+
+.chat-hosting-yes,
+.chat-notice {
+  display: inline-block;
+}

@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+
+body {
+  background-color: transparent;
+  font-size: 14pt;
+}
+
+#chat {
+  padding: 15px 0;
+  display: flex;
+  flex-direction: row;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+@keyframes chat-entry-skew {
+  from {
+    opacity: 0;
+    transform: skew(15deg);
+  }
+
+  to {
+    opacity: 1;
+    transform: skew(15deg);
+  }
+}
+
+.chat-line {
+  font-family: 'Orbitron', sans-serif;
+  margin: 4px;
+  padding: 8px 16px;
+  border: 2px solid #00fbff;
+  box-shadow: 0 0 20px rgba(255, 0, 255, 0.6);
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  transition: transform 0.2s;
+  backdrop-filter: blur(4px);
+  width: fit-content;
+  transform: skew(15deg);
+  display: inline-block;
+  flex-shrink: 0;
+  animation: chat-entry-skew 0.4s ease-out forwards;
+}
+
+.chat-line.even {
+  border-color: #ff00ff;
+  box-shadow: 0 0 20px rgba(255, 0, 255, 0.6);
+}
+
+.chat-line.odd {
+  border-color: #00fbff;
+  box-shadow: 0 0 20px rgba(2, 206, 206, 0.6);
+}
+
+.chat-line>* {
+  transform: skew(-15deg);
+}
+
+.chat-badges,
+.chat-channel,
+.chat-name {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.chat-name {
+  text-transform: uppercase;
+  font-weight: 700;
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.08);
+}
+
+.chat-colon {
+  display: none;
+}
+
+.chat-message {
+  display: block;
+  line-height: 1.5;
+  margin-top: 2px;
+  color: #fff;
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.08);
+}
