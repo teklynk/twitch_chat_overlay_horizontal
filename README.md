@@ -30,6 +30,17 @@ Append these parameters to your `chat.html` URL to customize the behavior.
 | `showBadges` | true/false | Toggle visibility of subscriber/moderator badges. |
 | `showBttvEmotes` | true/false | Enable or disable BetterTTV emote rendering. |
 
+## Custom CSS
+You can further customize the look in OBS by adding CSS to the **Custom CSS** field in the Browser Source properties.
+
+### Example: Adding a fade-out effect to the left side
+```css
+div#chat {
+    mask-image: linear-gradient(to right, transparent 0%, black 15%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 15%);
+}
+```
+
 ## Self Host / Local Development
 
 You can run this project locally using Docker. A docker-compose.yml file is included.
