@@ -35,12 +35,11 @@ You can further customize the look in OBS by adding CSS to the **Custom CSS** fi
 
 ### Example: Adding a fade-out effect to the left and right side
 ```css
-body { 
-	background-color: transparent; margin: 0px auto; overflow: hidden; 
+html { 
 	mask-image: linear-gradient(to left, transparent 0%, black 2%);
 }
 
-div#chat {
+body {
 	mask-image: linear-gradient(to right, transparent 0%, black 2%);
 }
 ```
