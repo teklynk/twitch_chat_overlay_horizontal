@@ -31,7 +31,7 @@ body {
   padding: 8px 16px;
   border: 2px solid #00fbff;
   box-shadow: 0 0 20px rgba(255, 0, 255, 0.6);
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.8);
   color: #fff;
   transition: transform 0.2s;
   backdrop-filter: blur(4px);

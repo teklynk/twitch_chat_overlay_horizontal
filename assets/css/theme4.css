@@ -10,15 +10,14 @@ body {
 
 .chat-line {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  margin: 2px;
+  margin: 0px;
   padding: 6px 12px;
-  background-color: #18181b;
-  border-radius: 4px;
+  background-color: #26262c;
   color: #efeff1;
   display: inline-block;
   vertical-align: top;
   font-size: 1.05rem;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-left: solid 4px #9147ff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   flex-shrink: 0;
   animation: chat-entry 0.4s ease-out forwards;

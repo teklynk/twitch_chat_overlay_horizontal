@@ -7,13 +7,13 @@ body {
 
 .chat-line {
     font-family: 'Comfortaa', cursive;
-    margin: 4px;
+    margin: 2px;
     padding: 8px 16px;
-    background: rgba(255, 255, 255, 0.8);
+    background: #ff66c4;
     border-radius: 30px;
-    border: 3px solid #ff66c4;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.9);
-    color: #ff007f;
+    border: 2px solid #fff;
+    text-shadow: 1px 1px #000000;
+    color: #fff;
     display: inline-flex;
     width: fit-content;
     animation: none;
@@ -26,12 +26,6 @@ body {
     vertical-align: middle;
 }
 
-.chat-name {
-    font-weight: 700;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.9);
-}
-
 .chat-message {
-    color: #ff007f;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.9);
+    color: #fff;
 }
