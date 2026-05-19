@@ -16,10 +16,12 @@ body {
 @keyframes chat-entry {
   from {
     opacity: 0;
+    transform: translate3d(0, 0, 0);
   }
 
   to {
     opacity: 1;
+    transform: translate3d(0, 0, 0);
   }
 }
 
@@ -31,7 +33,8 @@ body {
   vertical-align: middle;
   text-shadow: 1px 1px #000000;
   flex-shrink: 0;
-  animation: chat-entry 0.4s ease-out forwards;
+  animation: chat-entry 0.6s cubic-bezier(0.2, 1, 0.3, 1) both;
+  will-change: transform, opacity;
 }
 
 .chat-message {
@@ -126,7 +129,7 @@ div#chat {
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: flex-start;
   overflow-x: hidden;
   white-space: nowrap;
   scroll-behavior: smooth;
