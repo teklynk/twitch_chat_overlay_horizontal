@@ -33,11 +33,15 @@ Append these parameters to your `chat.html` URL to customize the behavior.
 ## Custom CSS
 You can further customize the look in OBS by adding CSS to the **Custom CSS** field in the Browser Source properties.
 
-### Example: Adding a fade-out effect to the left side
+### Example: Adding a fade-out effect to the left and right side
 ```css
+body { 
+	background-color: transparent; margin: 0px auto; overflow: hidden; 
+	mask-image: linear-gradient(to left, transparent 0%, black 2%);
+}
+
 div#chat {
-    mask-image: linear-gradient(to right, transparent 0%, black 15%);
-    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 15%);
+	mask-image: linear-gradient(to right, transparent 0%, black 2%);
 }
 ```
 
