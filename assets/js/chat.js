@@ -48,9 +48,17 @@ if (show7tvEmotes) {
   fetch(`https://twitchapi.teklynk.com/get7tvemotes.php?channel=${channel}`)
     .then(res => res.json())
     .then(data => {
-      if (Array.isArray(data)) {
-        data.forEach(emote => seventvEmotes[emote.code] = emote.id);
-      }
+      // 7TV returns channel emotes in emote_set.emotes and global emotes in emotes
+      const processEmotes = (emotesArray) => {
+        if (Array.isArray(emotesArray)) {
+          emotesArray.forEach(emote => {
+            seventvEmotes[emote.name] = emote.id;
+          });
+        }
+      };
+
+      if (data.emote_set) processEmotes(data.emote_set.emotes);
+      processEmotes(data.emotes);
     });
 }
 
