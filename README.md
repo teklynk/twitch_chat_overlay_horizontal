@@ -6,7 +6,7 @@ A clean, ticker-style horizontal chat overlay for Twitch streamers. Designed to 
 ## Features
 - **Horizontal "Push" Flow**: New messages enter from the right and push older messages toward the left edge of the screen.
 - **Multiple Stylized Themes**: Includes several built-in themes like "Cyber Orbitron" (Neon/Cyberpunk), "Pink Comfortaa", and a "Twitchy" dark mode style.
-- **Emote Support**: Fully supports native Twitch emotes and BetterTTV (Global and Channel) emotes.
+- **Emote Support**: Fully supports native Twitch emotes, BetterTTV, and 7TV (Global and Channel) emotes.
 - **High Performance**: Automatically prunes older messages from the DOM to ensure the overlay stays lightweight during long broadcast sessions.
 - **Customizable via URL**: Control functionality like badges, colors, and emotes through simple URL parameters.
 
@@ -29,6 +29,7 @@ Append these parameters to your `chat.html` URL to customize the behavior.
 | `useColor` | true/false | Use the chatter's native Twitch color or a default theme color. |
 | `showBadges` | true/false | Toggle visibility of subscriber/moderator badges. |
 | `showBttvEmotes` | true/false | Enable or disable BetterTTV emote rendering. |
+| `show7tvEmotes` | true/false | Enable or disable 7TV emote rendering. |
 
 ## Custom CSS
 You can further customize the look in OBS by adding CSS to the **Custom CSS** field in the Browser Source properties.
