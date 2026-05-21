@@ -14,6 +14,7 @@ if (themeOption) {
 const useColor = params.get('useColor') === 'true'; // Use chatters' colors or to inherit
 const showBadges = params.get('showBadges') === 'true'; // Show chatters' badges
 const showBttvEmotes = params.get('showBttvEmotes') === 'true'; // Show BetterTTV emotes
+const showFfzEmotes = params.get('showFfzEmotes') === 'true'; // Show FFZ emotes
 const show7tvEmotes = params.get('show7tvEmotes') === 'true'; // Show 7TV emotes
 const maxMessages = 50; // Maximum number of messages to keep in the DOM
 
@@ -21,6 +22,7 @@ let chat = document.getElementById("chat"),
   messageCount = 0,
   bttvEmotes = {},
   seventvEmotes = {},
+  ffzEmotes = {},
   randomColorsChosen = {},
   clientOptions = {
     options: {
@@ -39,6 +41,17 @@ if (showBttvEmotes) {
     .then(data => {
       if (Array.isArray(data)) {
         data.forEach(emote => bttvEmotes[emote.code] = emote.id);
+      }
+    });
+}
+
+// Fetch FFZ emotes (Global + Channel) via gateway on load
+if (showFfzEmotes) {
+  fetch(`https://twitchapi.teklynk.com/getffzemotes.php?channel=${channel}`)
+    .then(res => res.json())
+    .then(data => {
+      if (Array.isArray(data)) {
+        data.forEach(emote => ffzEmotes[emote.code] = emote.id);
       }
     });
 }
@@ -113,8 +126,8 @@ function formatEmotes(text, emotes) {
     }
   }
 
-  // Third-party Emote Logic (BTTV, 7TV): Scan for word-based matches
-  if (showBttvEmotes || show7tvEmotes) {
+  // Third-party Emote Logic (BTTV, 7TV, FFZ): Scan for word-based matches
+  if (showBttvEmotes || show7tvEmotes || showFfzEmotes) {
     let word = "";
     let start = -1;
     for (let i = 0; i <= splitText.length; i++) {
@@ -128,6 +141,9 @@ function formatEmotes(text, emotes) {
           i = start;
         } else if (word && show7tvEmotes && seventvEmotes[word]) {
           splitText.splice(start, word.length, '<img class="emoticon" src="https://cdn.7tv.app/emote/' + seventvEmotes[word] + '/2x.webp">');
+          i = start;
+        } else if (word && showFfzEmotes && ffzEmotes[word]) {
+          splitText.splice(start, word.length, '<img class="emoticon" src="https://cdn.frankerfacez.com/emote/' + ffzEmotes[word] + '/2">');
           i = start;
         }
         word = "";

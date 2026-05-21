@@ -205,10 +205,16 @@
                 Show 7TV emotes
             </label>
         </div>
-                <div class="form-check mb-2">
+        <div class="form-check mb-2">
             <input class="form-check-input shadow" type="checkbox" value="" id="showBttvEmotes" checked>
             <label class="form-check-label" for="showBttvEmotes">
                 Show BTTV emotes
+            </label>
+        </div>
+        <div class="form-check mb-2">
+            <input class="form-check-input shadow" type="checkbox" value="" id="showFfzEmotes" checked>
+            <label class="form-check-label" for="showFfzEmotes">
+                Show FFZ emotes
             </label>
         </div>
 
@@ -258,6 +264,10 @@
                 let isChecked = (localStorage.getItem("TwitchChatShow7TVEmotes") === 'true');
                 document.getElementById("show7tvEmotes").checked = isChecked;
             }
+            if (localStorage.getItem("TwitchChatShowFfzEmotes")) {
+                let isChecked = (localStorage.getItem("TwitchChatShowFfzEmotes") === 'true');
+                document.getElementById("showFfzEmotes").checked = isChecked;
+            }
         }
 
         document.getElementById("mainChannel").oninput = function () {
@@ -284,6 +294,10 @@
             localStorage.setItem("TwitchChatShow7TVEmotes", this.checked);
         };
 
+        document.getElementById("showFfzEmotes").onchange = function () {
+            localStorage.setItem("TwitchChatShowFfzEmotes", this.checked);
+        };
+
         // Check if any input fields have changed
         $(":text,textarea,select,:checkbox,input[type=range],input[type=password],input[type=number]").on('change', function (e) {
             $("#overlaylink").addClass("hide");
@@ -296,6 +310,7 @@
             let showBadges = document.getElementById("showBadges").checked;
             let showBttvEmotes = document.getElementById("showBttvEmotes").checked;
             let show7tvEmotes = document.getElementById("show7tvEmotes").checked;
+            let showFfzEmotes = document.getElementById("showFfzEmotes").checked;
 
             let validationError = false;
 
@@ -314,7 +329,7 @@
             if (!validationError) {
                 // build overlay url
                 let srcURL = window.location.protocol + "//" + window.location.host + window.location.pathname;
-                let fullUrl = srcURL + "chat.html?channel=" + mainChannel + "&themeOption=" + themeOption + "&useColor=" + useColor + "&showBadges=" + showBadges + "&showBttvEmotes=" + showBttvEmotes + "&show7tvEmotes=" + show7tvEmotes;
+                let fullUrl = srcURL + "chat.html?channel=" + mainChannel + "&themeOption=" + themeOption + "&useColor=" + useColor + "&showBadges=" + showBadges + "&showBttvEmotes=" + showBttvEmotes + "&show7tvEmotes=" + show7tvEmotes + "showFfzEmotes=" + showFfzEmotes;
                 fullUrl = fullUrl.replace("index.htmlchat.html", "chat.html");
                 document.getElementById("overlaylink").classList.remove("hide");
                 document.getElementById("overlaylink").innerHTML = "<p>Add this link as a browser source in OBS.<br>" +
