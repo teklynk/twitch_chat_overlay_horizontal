@@ -218,6 +218,22 @@
             </label>
         </div>
 
+        <div class="form-group range-slider mt-4">
+            <label for="maxMessages">Max Number of messages to show</label>
+            <input type="range" max="50" min="1" step="1" class="form-control range-slider-range shadow" id="maxMessages"
+                value="25" style="height: 0;">
+            <small class="text-muted range-slider-value"></small>
+            <small class="text-muted range-slider-value">Messages</small>
+        </div>
+
+        <div class="form-group range-slider mt-4">
+            <label for="fadeOutTime">Fade-Out time</label>
+            <input type="range" max="500" min="1" step="1" class="form-control range-slider-range shadow" id="fadeOutTime"
+                value="60" style="height: 0;">
+            <small class="text-muted range-slider-value"></small>
+            <small class="text-muted range-slider-value">Seconds</small>
+        </div>
+
         <br>
         <button class="btn btn-lg btn-success btn-block text-white shadow" id="generate_button" type="button">Generate
             Overlay
@@ -268,6 +284,32 @@
                 let isChecked = (localStorage.getItem("TwitchChatShowFfzEmotes") === 'true');
                 document.getElementById("showFfzEmotes").checked = isChecked;
             }
+            if (localStorage.getItem("TwitchFadeOutTime")) {
+                document.getElementById("fadeOutTime").value = localStorage.getItem("TwitchFadeOutTime");
+            }
+            if (localStorage.getItem("TwitchMaxMessages")) {
+                document.getElementById("maxMessages").value = localStorage.getItem("TwitchMaxMessages");
+            }
+
+            let rangeSlider = function rangeSlider() {
+                let slider = $('.range-slider'),
+                    range = $('.range-slider-range'),
+                    value = $('.range-slider-value');
+
+                slider.each(function () {
+
+                    value.each(function () {
+                        let value = $(this).prev().val();
+                        $(this).html(value);
+                    });
+
+                    range.on('input', function () {
+                        $(this).next(value).html(this.value);
+                    });
+                });
+            };
+
+            rangeSlider();
         }
 
         document.getElementById("mainChannel").oninput = function () {
@@ -298,6 +340,14 @@
             localStorage.setItem("TwitchChatShowFfzEmotes", this.checked);
         };
 
+        document.getElementById("fadeOutTime").oninput = function () {
+            localStorage.setItem("TwitchFadeOutTime", this.value);
+        };
+
+        document.getElementById("maxMessages").oninput = function () {
+            localStorage.setItem("TwitchMaxMessages", this.value);
+        };
+
         // Check if any input fields have changed
         $(":text,textarea,select,:checkbox,input[type=range],input[type=password],input[type=number]").on('change', function (e) {
             $("#overlaylink").addClass("hide");
@@ -311,6 +361,8 @@
             let showBttvEmotes = document.getElementById("showBttvEmotes").checked;
             let show7tvEmotes = document.getElementById("show7tvEmotes").checked;
             let showFfzEmotes = document.getElementById("showFfzEmotes").checked;
+            let fadeOutTime = document.getElementById("fadeOutTime").value;
+            let maxMessages = document.getElementById("maxMessages").value;
 
             let validationError = false;
 
@@ -329,7 +381,7 @@
             if (!validationError) {
                 // build overlay url
                 let srcURL = window.location.protocol + "//" + window.location.host + window.location.pathname;
-                let fullUrl = srcURL + "chat.html?channel=" + mainChannel + "&themeOption=" + themeOption + "&useColor=" + useColor + "&showBadges=" + showBadges + "&showBttvEmotes=" + showBttvEmotes + "&show7tvEmotes=" + show7tvEmotes + "showFfzEmotes=" + showFfzEmotes;
+                let fullUrl = srcURL + "chat.html?channel=" + mainChannel + "&themeOption=" + themeOption + "&useColor=" + useColor + "&showBadges=" + showBadges + "&showBttvEmotes=" + showBttvEmotes + "&show7tvEmotes=" + show7tvEmotes + "&showFfzEmotes=" + showFfzEmotes + "&fadeOutTime=" + fadeOutTime + "&maxMessages=" + maxMessages;
                 fullUrl = fullUrl.replace("index.htmlchat.html", "chat.html");
                 document.getElementById("overlaylink").classList.remove("hide");
                 document.getElementById("overlaylink").innerHTML = "<p>Add this link as a browser source in OBS.<br>" +

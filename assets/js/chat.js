@@ -11,12 +11,20 @@ if (themeOption) {
   document.head.appendChild(themeLink);
 }
 
+const FADE_DURATION = 1.0; // seconds for the fade animation (adjustable)
 const useColor = params.get('useColor') === 'true'; // Use chatters' colors or to inherit
 const showBadges = params.get('showBadges') === 'true'; // Show chatters' badges
 const showBttvEmotes = params.get('showBttvEmotes') === 'true'; // Show BetterTTV emotes
 const showFfzEmotes = params.get('showFfzEmotes') === 'true'; // Show FFZ emotes
 const show7tvEmotes = params.get('show7tvEmotes') === 'true'; // Show 7TV emotes
-const maxMessages = 50; // Maximum number of messages to keep in the DOM
+const maxMessages = (() => {
+  const value = parseInt(params.get('maxMessages'), 10);
+  return Number.isInteger(value) && value > 0 ? value : 50;
+})();
+const fadeOutTime = (() => {
+  const value = parseFloat(params.get('fadeOutTime'));
+  return Number.isFinite(value) && value > 0 ? value : 0;
+})();
 
 let chat = document.getElementById("chat"),
   messageCount = 0,
@@ -225,6 +233,15 @@ function handleChat(channel, user, message, self) {
   // Prune old messages to prevent DOM overloading and performance degradation
   while (chat.children.length > maxMessages) {
     chat.removeChild(chat.firstChild);
+  }
+
+  if (fadeOutTime > 0) {
+    // use a CSS animation for a gradual fade; set inline so each line uses the same timing
+    chatLine.style.animation = `chat-fade-out ${FADE_DURATION}s ease ${fadeOutTime}s 1 forwards`;
+    // remove the element after delay+duration to keep DOM clean
+    setTimeout(() => {
+      if (chatLine.parentNode === chat) chat.removeChild(chatLine);
+    }, (fadeOutTime + FADE_DURATION) * 1000);
   }
 
   // Automatically scroll to the right as new chat messages come in
