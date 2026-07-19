@@ -14,7 +14,7 @@ A clean, ticker-style horizontal chat overlay for Twitch streamers. Designed to 
 
 ### OBS Settings
 1. Add a **Browser Source** in OBS.
-2. Enter your generated overlay URL (e.g., `chat.html?channel=yourchannel&themeOption=2`).
+2. Enter your generated overlay URL (e.g., `chat.html?channel=yourchannel&themeOption=2&fadeOutTime=60&maxMessages=25`).
 3. Set the **Width** to match your stream canvas (e.g., 1920).
 4. Set the **Height** to something compact (e.g., 150 to 250).
 
@@ -30,6 +30,8 @@ Append these parameters to your `chat.html` URL to customize the behavior.
 | `showBadges` | true/false | Toggle visibility of subscriber/moderator badges. |
 | `showBttvEmotes` | true/false | Enable or disable BetterTTV emote rendering. |
 | `show7tvEmotes` | true/false | Enable or disable 7TV emote rendering. |
+| `fadeOutTime` | integer | How long (seconds) should messages stay on screen |
+| `maxMessages` | integer | Max number of messages to display |
 
 ## Custom CSS
 You can further customize the look in OBS by adding CSS to the **Custom CSS** field in the Browser Source properties.
