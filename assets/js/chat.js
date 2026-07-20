@@ -32,6 +32,7 @@ let chat = document.getElementById("chat"),
   seventvEmotes = {},
   ffzEmotes = {},
   randomColorsChosen = {},
+  badgeDefinitions = {},
   clientOptions = {
     options: {
       debug: true,
@@ -41,6 +42,115 @@ let chat = document.getElementById("chat"),
     channels: [channel],
   },
   client = new tmi.client(clientOptions);
+
+async function resolveChannelId(channelName) {
+  try {
+    const res = await fetch(`https://api.ivr.fi/twitch/resolve/${encodeURIComponent(channelName)}`);
+    const data = await res.json();
+    return data?.id || null;
+  } catch (err) {
+    console.warn("Unable to resolve Twitch channel id:", err);
+    return null;
+  }
+}
+
+const fallbackBadgeStyles = {
+  broadcaster: "chat-badge-broadcaster",
+  mod: "chat-badge-mod",
+  admin: "chat-badge-admin",
+  staff: "chat-badge-staff",
+  turbo: "chat-badge-turbo",
+  vip: "chat-badge-vip",
+  subscriber: "chat-badge-subscriber",
+  partner: "chat-badge-partner",
+  founder: "chat-badge-founder"
+};
+
+async function safeFetchJson(url) {
+  try {
+    const res = await fetch(url, { cache: "no-store" });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch (err) {
+    return null;
+  }
+}
+
+function mergeBadgeDefinitions(target, payload) {
+  if (!payload) return;
+
+  const candidates = payload?.badge_sets || payload?.badges || payload?.data || payload;
+
+  if (Array.isArray(candidates)) {
+    candidates.forEach((item) => {
+      const setName = item?.set_id || item?.id || item?.name || item?.badge_set || item?.slug;
+      const versions = item?.versions || item?.versions_map || item?.badge_versions;
+
+      if (!setName || !versions) return;
+
+      if (Array.isArray(versions)) {
+        const normalized = {};
+        versions.forEach((version) => {
+          const versionName = version?.id || version?.version || version?.name || version?.version_id || version?.key;
+          if (!versionName) return;
+
+          normalized[versionName] = {
+            image_url_1x: version?.image_url_1x || version?.image_url || version?.url_1x || version?.url,
+            image_url_2x: version?.image_url_2x || version?.url_2x,
+            image_url_3x: version?.image_url_3x || version?.url_3x,
+            image_url_4x: version?.image_url_4x || version?.url_4x,
+          };
+        });
+
+        target[setName] = normalized;
+      } else if (versions && typeof versions === "object") {
+        target[setName] = versions;
+      }
+    });
+
+    return;
+  }
+
+  if (payload && typeof payload === "object") {
+    Object.entries(payload).forEach(([setName, setData]) => {
+      if (!setData || typeof setData !== "object") return;
+
+      const versions = setData.versions || setData.badge_versions || setData.versions_map || setData.versions_obj;
+      if (!versions) return;
+
+      if (Array.isArray(versions)) {
+        const normalized = {};
+        versions.forEach((version) => {
+          const versionName = version?.id || version?.version || version?.name || version?.version_id || version?.key;
+          if (!versionName) return;
+
+          normalized[versionName] = {
+            image_url_1x: version?.image_url_1x || version?.image_url || version?.url_1x || version?.url,
+            image_url_2x: version?.image_url_2x || version?.url_2x,
+            image_url_3x: version?.image_url_3x || version?.url_3x,
+            image_url_4x: version?.image_url_4x || version?.url_4x,
+          };
+        });
+
+        target[setName] = normalized;
+      } else {
+        target[setName] = versions;
+      }
+    });
+  }
+}
+
+async function loadBadgeDefinitions(channelName) {
+  const globalData = await safeFetchJson("https://api.ivr.fi/v2/twitch/badges/global");
+  mergeBadgeDefinitions(badgeDefinitions, globalData);
+
+  const channelData = await safeFetchJson(
+    `https://api.ivr.fi/v2/twitch/badges/channel?login=${encodeURIComponent(channelName)}`
+  );
+  mergeBadgeDefinitions(badgeDefinitions, channelData);
+}
+
+loadBadgeDefinitions(channel.replace(/^#/, ""));
 
 // Fetch BTTV emotes (Global + Channel) via gateway on load
 if (showBttvEmotes) {
@@ -69,7 +179,6 @@ if (show7tvEmotes) {
   fetch(`https://twitchapi.teklynk.com/get7tvemotes.php?channel=${channel}`)
     .then(res => res.json())
     .then(data => {
-      // 7TV returns channel emotes in emote_set.emotes and global emotes in emotes
       const processEmotes = (emotesArray) => {
         if (Array.isArray(emotesArray)) {
           emotesArray.forEach(emote => {
@@ -134,7 +243,6 @@ function formatEmotes(text, emotes) {
     }
   }
 
-  // Third-party Emote Logic (BTTV, 7TV, FFZ): Scan for word-based matches
   if (showBttvEmotes || show7tvEmotes || showFfzEmotes) {
     let word = "";
     let start = -1;
@@ -164,24 +272,31 @@ function formatEmotes(text, emotes) {
 }
 
 function badges(chan, user) {
-  function createBadge(name) {
-    let badge = document.createElement("div");
-    badge.className = "chat-badge-" + name;
-    return badge;
-  }
-
-  let chatBadges = document.createElement("span");
+  const chatBadges = document.createElement("span");
   chatBadges.className = "chat-badges";
 
-  if (user.username === chan) {
-    chatBadges.appendChild(createBadge("broadcaster"));
+  const entries = Object.entries(user.badges || {});
+  if (user.username === chan && !entries.some(([badgeSet]) => badgeSet === "broadcaster")) {
+    entries.push(["broadcaster", "1"]);
   }
-  if (user["user-type"]) {
-    chatBadges.appendChild(createBadge(user["user-type"]));
-  }
-  if (user.turbo) {
-    chatBadges.appendChild(createBadge("turbo"));
-  }
+
+  entries.forEach(([badgeSet, badgeVersion]) => {
+    const versions = badgeDefinitions[badgeSet];
+    const versionData = versions?.[badgeVersion];
+
+    if (versionData) {
+      const badge = document.createElement("img");
+      badge.className = "chat-badge";
+      badge.alt = `${badgeSet}/${badgeVersion}`;
+      badge.draggable = false;
+      badge.src = versionData.image_url_2x || versionData.image_url_1x || versionData.image_url_3x || "";
+      chatBadges.appendChild(badge);
+    } else {
+      const badge = document.createElement("div");
+      badge.className = "chat-badge-" + badgeSet;
+      chatBadges.appendChild(badge);
+    }
+  });
 
   return chatBadges;
 }
@@ -200,7 +315,7 @@ function handleChat(channel, user, message, self) {
   chatLine.className = "chat-line";
   chatLine.dataset.username = name;
   chatLine.dataset.channel = channel;
-  chatLine.dataset.id = user["id"]
+  chatLine.dataset.id = user["id"];
 
   messageCount++;
   chatLine.classList.add(messageCount % 2 === 0 ? "even" : "odd");
@@ -220,7 +335,6 @@ function handleChat(channel, user, message, self) {
   chatColon.style.color = color;
 
   chatMessage.className = "chat-message";
-
   chatMessage.innerHTML = formatEmotes(message, user.emotes);
 
   if (showBadges) chatLine.appendChild(badges(chan, user, self));
@@ -272,9 +386,6 @@ function deleteMsg(channel, username, deletedMessage, userstate) {
 }
 
 client.addListener("message", handleChat);
-
 client.addListener("clearchat", clearChat);
-
 client.addListener("messagedeleted", deleteMsg);
-
 client.connect();
