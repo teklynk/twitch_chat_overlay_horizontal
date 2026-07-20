@@ -21,3 +21,12 @@ body {
 .chat-name {
     text-transform: uppercase;
 }
+
+.chat-colon {
+  display: inline;
+  margin-right: 0.2em;
+}
+
+.chat-message {
+  margin-top: 0;
+}

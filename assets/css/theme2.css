@@ -74,9 +74,9 @@ body {
 }
 
 .chat-message {
+  margin-top: 0.2em;
   display: block;
   line-height: 1.5;
-  margin-top: 2px;
   color: #fff;
   text-shadow: 0 0 10px rgba(0, 255, 255, 0.08);
 }

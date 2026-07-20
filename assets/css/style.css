@@ -54,7 +54,7 @@ body {
 }
 
 .chat-message {
-  margin-top: 0.2em;
+  margin-top: 0;
   color: #fff;
   text-align: left;
   display: inline-flex;
@@ -87,7 +87,7 @@ body {
 }
 
 .chat-colon {
-  display: none;
+  display: inline;
 }
 
 .chat-badges {
