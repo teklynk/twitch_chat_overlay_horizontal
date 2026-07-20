@@ -1,0 +1,41 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+body {
+    font-family: "Inter", sans-serif;
+}
+
+.chat-line.fade-out {
+    opacity: 0;
+    transition: opacity 1s ease;
+}
+
+.chat-message {
+    margin-top: 0;
+    font-weight: bold;
+    color: #fff;
+    text-align: left;
+}
+
+.chat-message img.emoticon {
+    height: 1.4em;
+    min-width: 1.4em;
+    vertical-align: middle;
+}
+
+.chat-name {
+    font-weight: bold;
+    color: #6441A4;
+    display: inline-block;
+    text-align: left;
+    padding-left: 0;
+    overflow-wrap: anywhere;
+}
+
+.chat-colon {
+    display: inline !important;
+}
+
+.chat-badges {
+    gap: 0;
+    margin-right: 0;
+}

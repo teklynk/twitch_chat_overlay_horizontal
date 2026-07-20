@@ -333,14 +333,19 @@ function handleChat(channel, user, message, self) {
 
   chatColon.className = "chat-colon";
   chatColon.style.color = color;
+  chatColon.textContent = ":";
 
   chatMessage.className = "chat-message";
   chatMessage.innerHTML = formatEmotes(message, user.emotes);
 
+  const chatUser = document.createElement("span");
+  chatUser.className = "chat-user";
+
   if (showBadges) chatLine.appendChild(badges(chan, user, self));
   if (client.opts.channels.length > 1) chatLine.appendChild(chatChannel);
-  chatLine.appendChild(chatName);
-  chatLine.appendChild(chatColon);
+  chatUser.appendChild(chatName);
+  chatUser.appendChild(chatColon);
+  chatLine.appendChild(chatUser);
   chatLine.appendChild(chatMessage);
   chat.appendChild(chatLine);
 

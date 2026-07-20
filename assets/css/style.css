@@ -87,7 +87,7 @@ body {
 }
 
 .chat-colon {
-  display: inline;
+  display: none;
 }
 
 .chat-badges {
@@ -106,10 +106,6 @@ body {
   border-radius: 2px;
   object-fit: contain;
   margin-right: 0.2em;
-}
-
-.chat-line:not(.chat-action) .chat-colon:after {
-  content: ":";
 }
 
 .chat-badges > div {
