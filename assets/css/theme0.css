@@ -21,10 +21,9 @@ body {
 }
 
 .chat-message {
-    margin-top: 0;
-    font-weight: bold;
-    color: #fff;
+    white-space: normal;
     text-align: left;
+    vertical-align: text-top;
 }
 
 .chat-name {
@@ -46,7 +45,7 @@ body {
 .chat-badges {
     display: inline-block;
     vertical-align: top;
-    
+    margin: 0;
 }
 
 .chat-badges > img.chat-badge {
