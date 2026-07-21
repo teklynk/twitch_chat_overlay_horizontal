@@ -156,6 +156,7 @@ div#chat {
   white-space: nowrap;
   scroll-behavior: smooth;
   width: 100%;
+  min-height: 100px;
 }
 
 .chat-hosting-yes,
