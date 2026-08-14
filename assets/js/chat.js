@@ -17,6 +17,7 @@ const showBadges = params.get('showBadges') === 'true'; // Show chatters' badges
 const showBttvEmotes = params.get('showBttvEmotes') === 'true'; // Show BetterTTV emotes
 const showFfzEmotes = params.get('showFfzEmotes') === 'true'; // Show FFZ emotes
 const show7tvEmotes = params.get('show7tvEmotes') === 'true'; // Show 7TV emotes
+const onlySpecialUsers = params.get('onlySpecialUsers') === 'true'; // Only show messages from subs, mods, vips
 const maxMessages = (() => {
   const value = parseInt(params.get('maxMessages'), 10);
   return Number.isInteger(value) && value > 0 ? value : 50;
@@ -299,6 +300,17 @@ function badges(chan, user) {
   });
 
   return chatBadges;
+}
+
+function isSpecialUser(user, chan) {
+  // Check if user is broadcaster, mod, vip, or subscriber
+  const badges = user.badges || {};
+  const isBroadcaster = user.username === chan;
+  const isMod = 'moderator' in badges;
+  const isVip = 'vip' in badges;
+  const isSubscriber = 'subscriber' in badges;
+  
+  return isBroadcaster || isMod || isVip || isSubscriber;
 }
 
 function handleChat(channel, user, message, self) {
