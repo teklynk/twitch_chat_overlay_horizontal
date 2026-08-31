@@ -1,5 +1,15 @@
 const params = new URLSearchParams(window.location.search);
-const channel = params.get('channel').toLowerCase().trim();
+const channelNames = (params.get("channel") || "")
+  .split(",")
+  .map((name) => name.trim().toLowerCase().replace(/^#/, ""))
+  .filter(Boolean);
+
+const channel = channelNames[0] || "twitch";
+const multipleChannels = channelNames.length > 1;
+
+function normalizeChannelName(channelName) {
+  return String(channelName || "").trim().replace(/^#/, "").toLowerCase();
+}
 
 // Theme selection logic
 const themeOption = params.get('themeOption');
@@ -40,13 +50,14 @@ let chat = document.getElementById("chat"),
       skipUpdatingEmotesets: true,
     },
     connection: { reconnect: true },
-    channels: [channel],
+    channels: channelNames.length ? channelNames : [channel],
   },
   client = new tmi.client(clientOptions);
 
 async function resolveChannelId(channelName) {
   try {
-    const res = await fetch(`https://api.ivr.fi/twitch/resolve/${encodeURIComponent(channelName)}`);
+    const safeChannelName = normalizeChannelName(channelName);
+    const res = await fetch(`https://api.ivr.fi/twitch/resolve/${encodeURIComponent(safeChannelName)}`);
     const data = await res.json();
     return data?.id || null;
   } catch (err) {
@@ -142,55 +153,68 @@ function mergeBadgeDefinitions(target, payload) {
 }
 
 async function loadBadgeDefinitions(channelName) {
+  const safeChannelName = normalizeChannelName(channelName);
   const globalData = await safeFetchJson("https://api.ivr.fi/v2/twitch/badges/global");
   mergeBadgeDefinitions(badgeDefinitions, globalData);
 
   const channelData = await safeFetchJson(
-    `https://api.ivr.fi/v2/twitch/badges/channel?login=${encodeURIComponent(channelName)}`
+    `https://api.ivr.fi/v2/twitch/badges/channel?login=${encodeURIComponent(safeChannelName)}`
   );
   mergeBadgeDefinitions(badgeDefinitions, channelData);
 }
 
-loadBadgeDefinitions(channel.replace(/^#/, ""));
+// Fetch badge data for each channel
+(channelNames.length ? channelNames : [channel]).forEach((channelName) => {
+  loadBadgeDefinitions(channelName);
+});
 
 // Fetch BTTV emotes (Global + Channel) via gateway on load
 if (showBttvEmotes) {
-  fetch(`https://twitchapi.teklynk.com/getbttvemotes.php?channel=${channel}`)
-    .then(res => res.json())
-    .then(data => {
-      if (Array.isArray(data)) {
-        data.forEach(emote => bttvEmotes[emote.code] = emote.id);
-      }
-    });
+  (channelNames.length ? channelNames : [channel]).forEach((channelName) => {
+    const safeChannelName = normalizeChannelName(channelName);
+    fetch(`https://twitchapi.teklynk.com/getbttvemotes.php?channel=${safeChannelName}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data)) {
+          data.forEach((emote) => (bttvEmotes[emote.code] = emote.id));
+        }
+      });
+  });
 }
 
 // Fetch FFZ emotes (Global + Channel) via gateway on load
 if (showFfzEmotes) {
-  fetch(`https://twitchapi.teklynk.com/getffzemotes.php?channel=${channel}`)
-    .then(res => res.json())
-    .then(data => {
-      if (Array.isArray(data)) {
-        data.forEach(emote => ffzEmotes[emote.code] = emote.id);
-      }
-    });
+  (channelNames.length ? channelNames : [channel]).forEach((channelName) => {
+    const safeChannelName = normalizeChannelName(channelName);
+    fetch(`https://twitchapi.teklynk.com/getffzemotes.php?channel=${safeChannelName}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data)) {
+          data.forEach((emote) => (ffzEmotes[emote.code] = emote.id));
+        }
+      });
+  });
 }
 
 // Fetch 7TV emotes (Global + Channel) via gateway on load
 if (show7tvEmotes) {
-  fetch(`https://twitchapi.teklynk.com/get7tvemotes.php?channel=${channel}`)
-    .then(res => res.json())
-    .then(data => {
-      const processEmotes = (emotesArray) => {
-        if (Array.isArray(emotesArray)) {
-          emotesArray.forEach(emote => {
-            seventvEmotes[emote.name] = emote.id;
-          });
-        }
-      };
+  (channelNames.length ? channelNames : [channel]).forEach((channelName) => {
+    const safeChannelName = normalizeChannelName(channelName);
+    fetch(`https://twitchapi.teklynk.com/get7tvemotes.php?channel=${safeChannelName}`)
+      .then((res) => res.json())
+      .then((data) => {
+        const processEmotes = (emotesArray) => {
+          if (Array.isArray(emotesArray)) {
+            emotesArray.forEach((emote) => {
+              seventvEmotes[emote.name] = emote.id;
+            });
+          }
+        };
 
-      if (data.emote_set) processEmotes(data.emote_set.emotes);
-      processEmotes(data.emotes);
-    });
+        if (data.emote_set) processEmotes(data.emote_set.emotes);
+        processEmotes(data.emotes);
+      });
+  });
 }
 
 function dehash(channel) {
@@ -353,6 +377,12 @@ function handleChat(channel, user, message, self) {
   const chatUser = document.createElement("span");
   chatUser.className = "chat-user";
 
+  if (multipleChannels) {
+    chatChannel.textContent = `[${chan}]`;
+    chatChannel.style.marginRight = "0.35rem";
+    chatUser.appendChild(chatChannel);
+  }
+
   if (showBadges) chatLine.appendChild(badges(chan, user, self));
   if (client.opts.channels.length > 1) chatLine.appendChild(chatChannel);
   chatUser.appendChild(chatName);
@@ -361,21 +391,17 @@ function handleChat(channel, user, message, self) {
   chatLine.appendChild(chatMessage);
   chat.appendChild(chatLine);
 
-  // Prune old messages to prevent DOM overloading and performance degradation
   while (chat.children.length > maxMessages) {
     chat.removeChild(chat.firstChild);
   }
 
   if (fadeOutTime > 0) {
-    // use a CSS animation for a gradual fade; set inline so each line uses the same timing
     chatLine.style.animation = `chat-fade-out ${FADE_DURATION}s ease ${fadeOutTime}s 1 forwards`;
-    // remove the element after delay+duration to keep DOM clean
     setTimeout(() => {
       if (chatLine.parentNode === chat) chat.removeChild(chatLine);
     }, (fadeOutTime + FADE_DURATION) * 1000);
   }
 
-  // Automatically scroll to the right as new chat messages come in
   window.requestAnimationFrame(() => {
     chat.scrollTo({
       left: chat.scrollWidth,
